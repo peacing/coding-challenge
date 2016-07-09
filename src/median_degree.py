@@ -1,16 +1,13 @@
 #! usr/bin/ienv python3
 
-import numpy as np
 import networkx as nx
-from itertools import combinations
-
 
 class PaymentGraph():
     """Initialize an empty graph structure built with networkx package.
 
     Parameters
     ----------
-    max_elapse : (default=60) time window a tweet must fall within to be added to graph.
+    max_elapse : (default=60) time window a payment must fall within to be added to graph.
 
     Methods
     -------
@@ -29,20 +26,19 @@ class PaymentGraph():
         self.new_max_time = False
         self.G = nx.Graph()
 
-    def _add_edges(self, hashtags, timestamp):
+    def _add_edges(self, target, actor, timestamp):
         """Form edges of graph from combinations of hashtags.
-        Include timestamp from relevant tweet as an edge attribute.
+        Include timestamp from relevant payment as an edge attribute.
 
         Parameters
         ----------
-        hashtags : {set} of hashtags contained in tweet.
-        timestamp : {int} timestamp of tweet.
+        hashtags : {set} of hashtags contained in payment.
+        timestamp : {int} timestamp of payment.
         """
 
         # Since graph is undirected, combinations of hashtags is sufficient.
         # Ex: hashtags = ('A', 'B', 'C'), combinations = ('AB', 'AC', 'BC')
-        for hash1, hash2 in combinations(hashtags, 2):
-            self.G.add_edge(hash1, hash2, timestamp=timestamp)
+        self.G.add_edge(target, actor, timestamp=timestamp)
             # print("Edges: {} \n".format(self.G.edges(data=True)))
 
         return None
@@ -54,11 +50,11 @@ class PaymentGraph():
 
         Parameters
         ----------
-        new_timestamp : {int} timestamp of incoming tweet.
+        new_timestamp : {int} timestamp of incoming payment.
 
         Returns
         -------
-        max_timestamp : {int} timestamp of the newest tweet.
+        max_timestamp : {int} timestamp of the newest payment.
             (not necessarily the most recently processed one)
 
         Notes
@@ -72,21 +68,22 @@ class PaymentGraph():
 
         if new_timestamp > self.max_timestamp:  # if setting new max
 
+            print("Old timestamp: {}".format(self.max_timestamp))
             self.max_timestamp = new_timestamp
             self.new_max_time = True
+            print("New timestamp: {}".format(self.max_timestamp))
 
         return self.max_timestamp
 
     def _check_too_old(self, timestamp):
-        """Check if timestamp on tweet is greater than 60 secs from max.
+        """Check if timestamp on payment is greater than 60 secs from max.
 
         Returns
         -------
         {bool} True or False
         """
-
         # if incoming timestamp is no greater than 60 secs from max
-        if self.max_timestamp - timestamp > self.max_elapse:
+        if (self.max_timestamp - timestamp > self.max_elapse):
             return True
         else:
             return False
@@ -96,41 +93,41 @@ class PaymentGraph():
 
         Parameters
         ----------
-        max_timestamp : {int} timestamp of the newest tweet.
+        max_timestamp : {int} timestamp of the newest payment.
             (not necessarily the most recently processed one)
         """
 
         timestamps = nx.get_edge_attributes(self.G, 'timestamp')
+        print("timestamps: {}".format(timestamps))
         # Ex: timestamps = {('Apache', 'Spark'): 1459207450, ('Spark', 'Storm'): 1459207452}
         for n, t in timestamps.items():
 
             if (max_timestamp - t) > self.max_elapse:
-                # print("Removing edge between {}".format(n))
+                print("Removing edge between {}".format(n))
                 self.G.remove_edge(n[0], n[1])
 
         return None
 
-    def update_graph(self, tweet):
-        """Add and/or removes nodes & edges to the graph as new tweets
-        are processed.
+    def update_graph(self, payment):
+        """Add and/or removes nodes & edges to the graph as new payments are processed.
 
         Parameters
         ----------
-        tweet : instance of FormatTweet class
+        payment : instance of FormatPayment class
 
         Notes
         -----
-        Algorithm to update graph proceeds as follows:
+        Algorithm to update graph works as follows:
             1) Update timestamp to latest.
             2) If timestamp is updated, look to remove old node/edges from graph.
-            3) If tweet has hashtags and is not too old, add its node/edges to graph.
+            3) If payment is not too old, add its nodes/edges to graph.
         """
 
-        print("incoming tweet: {} {}".format(tweet.hashtags, tweet.timestamp))
+        print("incoming payment: {} {} {}".format(payment.target, payment.actor, payment.timestamp))
 
-        # determine if timestamp of tweet is latest
-        self.max_timestamp = self._update_max_timestamp(tweet.timestamp)
-        # print("Max timestamp: {}".format(self.max_timestamp))
+        # determine if timestamp of payment is latest
+        self.max_timestamp = self._update_max_timestamp(payment.timestamp)
+        #print("Max timestamp: {}".format(self.max_timestamp))
 
         if self.new_max_time:
             # remove edges that fall outside the 60 second window
@@ -139,25 +136,25 @@ class PaymentGraph():
             # remove nodes with degree 0
             self.G.remove_nodes_from(nx.isolates(self.G))
 
-        if tweet.hashtags:  # if tweet contained more than 1 hashtag
+        # determine if payment is older than 60 seconds of max timestamp
+        too_old = self._check_too_old(payment.timestamp)
+        print("Too old?: {}".format(too_old))
 
-            # determine if tweet is older than 60 seconds of max timestamp
-            too_old = self._check_too_old(tweet.timestamp)
-            # print("Too old?: {}".format(too_old))
+        test = not too_old
 
-            if not too_old:
+        if not too_old:
 
-                # add nodes to graph
-                self.G.add_nodes_from(tweet.hashtags)
+            #actorandtarget = [payment.target, payment.actor]
+            #print("A&T list: {}".format(actorandtarget))
 
-                # add edges to graph
-                self._add_edges(tweet.hashtags, tweet.timestamp)
+            # add nodes to graph
+            self.G.add_nodes_from(list((payment.target, payment.actor)))
 
-                # print("nodes: {}".format(self.G.nodes()))
-                # print("edges: {}".format(self.G.edges()))
+            # add edges to graph
+            self._add_edges(payment.target, payment.actor, payment.timestamp)
 
-            else:
-                pass
+            print("nodes: {}".format(self.G.nodes()))
+            print("edges: {}".format(self.G.edges(data=True)))
 
         else:
             pass
