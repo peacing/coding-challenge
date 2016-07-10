@@ -1,7 +1,7 @@
 #!/usr/bin/ienv python3
 
-import sys
 import json
+import argparse
 from os import path
 from calendar import timegm
 from time import strptime
@@ -36,28 +36,35 @@ class FormatPayment():
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1:  # custom input files named
+    parser = argparse.ArgumentParser(description='Specify input and output file path')
+    parser.add_argument('-i','--input_file', help='The input txt file path')
+    parser.add_argument('-o','--output_file', help='The output txt file path')
+    args = parser.parse_args()
 
-        input_file = sys.argv[1]
+    if args.input_file: # custom input file argument specified
+        input_file = args.input_file
         assert path.isfile(input_file), "Check the input file is correct and try again."
         input_file_path = path.abspath(input_file)
-
-    else:  # run venmo-trans.txt file in venmo_input
-
+    else: # run venmo-trans.txt file in venmo_input
         input_file_path = path.abspath(path.join('venmo_input', 'venmo-trans.txt'))
 
-    output_file_path = path.abspath(path.join('venmo_output', 'output.txt'))
+    if args.output_file:  # custom output file argument specified
+        output_file = args.output_file
+        assert path.isfile(output_file), "Check the output file is correct and try again."
+        output_file_path = path.abspath(output_file)
+    else:  # run venmo-trans.txt file in venmo_input
+        output_file_path = path.abspath(path.join('venmo_output', 'output.txt'))
 
     # open output file
     output = open(path.abspath(output_file_path), 'w')
 
-    # initialize HashGraphX instance (from average_degree.py)
+    # initialize PaymentGraph instance (from median_degree.py)
     payment_graph = PaymentGraph()
 
     # read in tweets from input file
     with open(input_file_path, 'r') as input_file:
         for payment in input_file:
-            print("Processing: {}".format(payment))
+            #print("Processing: {}".format(payment))
             try:  # In case of an error
 
                 payment_dict = json.loads(payment)  # load json to python dict
@@ -75,13 +82,14 @@ if __name__ == '__main__':
 
                 # calculated average degree of updated graph
                 median_degree = payment_graph.calculate_median_degree()
-                print("median_degree: {}\n\n".format(median_degree))
+                #print("median_degree: {}\n\n".format(median_degree))
 
                 # write average degree to output txt file
                 output.write("{}\n".format(median_degree))
 
             except Exception as e:
 
+                print("Error")
                 pass  # just letting it go
 
     output.close()
