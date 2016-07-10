@@ -5,7 +5,7 @@ import json
 from os import path
 from calendar import timegm
 from time import strptime
-from median_degree import PaymentGraph
+from rolling_median import PaymentGraph
 
 
 class FormatPayment():
@@ -19,7 +19,7 @@ class FormatPayment():
             else is empty set.
     """
 
-    def __init__(self, created_time, target, actor):
+    def __init__(self, target, actor, created_time):
         """Format tweet
 
         Parameters
@@ -63,20 +63,20 @@ if __name__ == '__main__':
 
                 payment_dict = json.loads(payment)  # load json to python dict
 
-                # capture the created_at and hashtags fields
+                # capture the created_time, target, and actor fields
                 created_time = payment_dict["created_time"]
                 target = payment_dict["target"]
                 actor = payment_dict["actor"]
 
-                # format tweet to be added to hashtag graph
-                new_payment = FormatPayment(created_time, target, actor)
+                # format payment to be added to payment graph
+                new_payment = FormatPayment(target, actor, created_time)
 
                 # add payment to graph
                 payment_graph.update_graph(new_payment)
 
                 # calculated average degree of updated graph
                 median_degree = payment_graph.calculate_median_degree()
-                # print("median_degree: {}\n\n".format(median_degree))
+                print("median_degree: {}\n\n".format(median_degree))
 
                 # write average degree to output txt file
                 output.write("{}\n".format(median_degree))

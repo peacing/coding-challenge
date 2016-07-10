@@ -1,6 +1,7 @@
 #! usr/bin/ienv python3
 
 import networkx as nx
+import statistics
 
 class PaymentGraph():
     """Initialize an empty graph structure built with networkx package.
@@ -161,24 +162,23 @@ class PaymentGraph():
 
         return None
 
-    def calculate_median_degree(self, ):
-        """Calculate the average degree of each node in the graph.
+    def calculate_median_degree(self,):
+        """Calculate the median degree of each node in the graph.
 
         Returns
         -------
-        average_degree : {float} truncated to 2 decimals of the average degree
+        median_degree : {float} truncated to 2 decimals of the median degree
             of each node. Returns 0.00 if there is no graph.
         """
 
-        if self.G:
+        if self.G: # if graph exists
 
             # Get a {list} of the degree of each node in the graph
             degree_list = list(self.G.degree().values())
+            # use statistics builtin method median to calculate median
+            median_degree = statistics.median(degree_list)
 
-            # avg degree is sum of each node's degree / total No. of nodes
-            average_degree = (sum(degree_list)) / self.G.number_of_nodes()
-
-            return "{:.2f}".format(average_degree)
+            return "{:.2f}".format(median_degree)
 
         else:  # if no nodes/edges, return 0
 
