@@ -28,8 +28,7 @@ class FormatPayment():
         created_time : {str} of datetime information
         hashtags: {list} containing hashtags mentioned in tweet
         """
-        self.timestamp = created_time
-        self.timestamp = self.timestamp.replace('T',' ').rstrip('Z')
+        self.timestamp = created_time.replace('T',' ').rstrip('Z')
         self.timestamp = timegm(strptime(self.timestamp, "%Y-%m-%d %H:%M:%S"))
 
         self.target = target

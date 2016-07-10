@@ -141,12 +141,7 @@ class PaymentGraph():
         too_old = self._check_too_old(payment.timestamp)
         print("Too old?: {}".format(too_old))
 
-        test = not too_old
-
         if not too_old:
-
-            #actorandtarget = [payment.target, payment.actor]
-            #print("A&T list: {}".format(actorandtarget))
 
             # add nodes to graph
             self.G.add_nodes_from(list((payment.target, payment.actor)))
@@ -168,7 +163,7 @@ class PaymentGraph():
         Returns
         -------
         median_degree : {float} truncated to 2 decimals of the median degree
-            of each node. Returns 0.00 if there is no graph.
+            of graph. Returns 0.00 if there is no graph.
         """
 
         if self.G: # if graph exists
