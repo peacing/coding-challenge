@@ -1,9 +1,8 @@
+#! usr/bin/env python3
 
 from src.process_payments import VenmoPayment
 from src.process_payments import parse_payment_input
 from src.rolling_median import PaymentGraph
-
-
 
 class TestVenmoPayment(object):
 
@@ -17,10 +16,10 @@ class TestVenmoPayment(object):
         payment_dict = {'target': 'Jamie-Korn', 'created_time': '2016-04-07T03:33:19Z', 'actor': 'Jordan-Gruber'}
         created_time, target, actor = parse_payment_input(payment_dict)
         assert created_time == '2016-04-07T03:33:19Z'
-        assert target = 'Jamie-Korn'
+        assert target == 'Jamie-Korn'
         assert actor == 'Jordan-Gruber'
 
-class TestGraph(object):
+class TestBuildingVenmoGraph(object):
 
     def setUp(self):
         self.payment_graph = PaymentGraph()

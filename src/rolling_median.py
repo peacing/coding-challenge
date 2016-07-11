@@ -1,9 +1,9 @@
-#! usr/bin/ienv python3
+#! usr/bin/env python3
 
 import networkx as nx
 import statistics
 
-class PaymentGraph():
+class PaymentGraph(object):
     """Initialize an empty graph structure built with networkx package.
 
     Parameters
@@ -12,7 +12,7 @@ class PaymentGraph():
 
     Methods
     -------
-    calculate_average_degree : returns average degree of graph
+    calculate_median_degree : returns median degree of graph
     update_graph : algorithm that determines when to add/remove hastags from the graph
 
     Attributes
@@ -69,10 +69,10 @@ class PaymentGraph():
 
         if new_timestamp > self.max_timestamp:  # if setting new max
 
-            print("Old timestamp: {}".format(self.max_timestamp))
+            #print("Old timestamp: {}".format(self.max_timestamp))
             self.max_timestamp = new_timestamp
             self.new_max_time = True
-            print("New timestamp: {}".format(self.max_timestamp))
+            #print("New timestamp: {}".format(self.max_timestamp))
 
         return self.max_timestamp
 
@@ -94,17 +94,15 @@ class PaymentGraph():
 
         Parameters
         ----------
-        max_timestamp : {int} timestamp of the newest payment.
+        max_timestamp : {int} timestamp of the latest payment.
             (not necessarily the most recently processed one)
         """
 
         timestamps = nx.get_edge_attributes(self.G, 'timestamp')
-        print("timestamps: {}".format(timestamps))
-        # Ex: timestamps = {('Apache', 'Spark'): 1459207450, ('Spark', 'Storm'): 1459207452}
         for n, t in timestamps.items():
 
             if (max_timestamp - t) > self.max_elapse:
-                print("Removing edge between {}".format(n))
+                #print("Removing edge between {}".format(n))
                 self.G.remove_edge(n[0], n[1])
 
         return None
@@ -114,7 +112,7 @@ class PaymentGraph():
 
         Parameters
         ----------
-        payment : instance of FormatPayment class
+        payment : instance of VenmoPayment class
 
         Notes
         -----
@@ -124,7 +122,7 @@ class PaymentGraph():
             3) If payment is not too old, add its nodes/edges to graph.
         """
 
-        print("incoming payment: {} {} {}".format(payment.target, payment.actor, payment.timestamp))
+        #print("incoming payment: {} {} {}".format(payment.target, payment.actor, payment.timestamp))
 
         # determine if timestamp of payment is latest
         self.max_timestamp = self._update_max_timestamp(payment.timestamp)
@@ -139,7 +137,7 @@ class PaymentGraph():
 
         # determine if payment is older than 60 seconds of max timestamp
         too_old = self._check_too_old(payment.timestamp)
-        print("Too old?: {}".format(too_old))
+        #print("Too old?: {}".format(too_old))
 
         if not too_old:
 
@@ -149,8 +147,8 @@ class PaymentGraph():
             # add edges to graph
             self._add_edges(payment.target, payment.actor, payment.timestamp)
 
-            print("nodes: {}".format(self.G.nodes()))
-            print("edges: {}".format(self.G.edges(data=True)))
+            #print("nodes: {}".format(self.G.nodes()))
+            #print("edges: {}".format(self.G.edges(data=True)))
 
         else:
             pass
