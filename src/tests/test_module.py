@@ -1,5 +1,6 @@
 
 from src.process_payments import VenmoPayment
+from src.process_payments import parse_payment_input
 from src.rolling_median import PaymentGraph
 
 
@@ -11,6 +12,13 @@ class TestVenmoPayment(object):
         assert payment.target == 'Jamie-Korn'
         assert payment.actor == 'Jordan-Gruber'
         assert payment.timestamp == 1459999999
+
+    def test_dict_parser(self):
+        payment_dict = {'target': 'Jamie-Korn', 'created_time': '2016-04-07T03:33:19Z', 'actor': 'Jordan-Gruber'}
+        created_time, target, actor = parse_payment_input(payment_dict)
+        assert created_time == '2016-04-07T03:33:19Z'
+        assert target = 'Jamie-Korn'
+        assert actor == 'Jordan-Gruber'
 
 class TestGraph(object):
 
