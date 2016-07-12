@@ -21,7 +21,7 @@ There are couple ways to run the code:
 
 ### Testing
 
-To run all three nosetests type; `nosetests -sv`. Passing will look like:
+To run all three nosetests type `nosetests -sv`. Passing will look like:
 
     src.tests.test_module.TestBuildingVenmoGraph.test_building_venmo_graph ... ok
     src.tests.test_module.TestVenmoPayment.test_dict_parser ... ok
