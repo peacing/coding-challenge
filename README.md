@@ -23,11 +23,11 @@ There are couple ways to run the code:
 
 To run all three nosetests type; `nosetests -sv`. Passing will look like:
 
-    `src.tests.test_module.TestBuildingVenmoGraph.test_building_venmo_graph ... ok
+    src.tests.test_module.TestBuildingVenmoGraph.test_building_venmo_graph ... ok
     src.tests.test_module.TestVenmoPayment.test_dict_parser ... ok
     src.tests.test_module.TestVenmoPayment.test_payment ... ok
     ----------------------------------------------------------------------
-    Ran 3 tests in 0.098s`
+    Ran 3 tests in 0.098s
 
 There are additional tests in the `insight_testsuite`. To run, execute the `run_tests.sh` script in that directory.
 
