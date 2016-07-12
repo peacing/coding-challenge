@@ -1,6 +1,6 @@
 # Running Instructions
 
-## Packages
+### Packages
 
 To run the program and it's tests, the following two packages are required:
 
@@ -10,6 +10,23 @@ To run the program and it's tests, the following two packages are required:
 To install the two packages run `pip install networkx` and `pip install nose`, or alternatively,
 install them directly from the requirements.txt file by entering `pip install -r requirements.txt`.
 
+### Running
+
+There are couple ways to run the code:
+
+1. In the home directory of the repository type: `python src/process_payments.py` (Note that by default the input file is assumed to be `./venmo_input/venmo-trans.txt` and the output file `./venmo_output/output.txt`, but these can be customized using the command line arguments `--input_file='./custom/filepath'` and `--output_file='./custom/filepath'`
+2. Alternatively, the script run.sh can be executed by typing while in the home dir: `./run.sh`
+
+### Testing
+
+To run all three nosetests type; `nosetests -sv`. Passing will look like:
+
+`    src.tests.test_module.TestBuildingVenmoGraph.test_building_venmo_graph ... ok
+    src.tests.test_module.TestVenmoPayment.test_dict_parser ... ok
+    src.tests.test_module.TestVenmoPayment.test_payment ... ok
+
+    ----------------------------------------------------------------------
+    Ran 3 tests in 0.098s`
 
 # Table of Contents
 
