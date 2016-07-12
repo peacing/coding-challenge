@@ -1,3 +1,16 @@
+# Running Instructions
+
+## Packages
+
+To run the program and it's tests, the following two packages are required:
+
+- *networkx:* NetworkX is a Python language software package for the creation and manipulation of networks. For this project, it's high-level syntax allowed for clear, conside code related to payment graph additions and subtractions. It is efficient and scaleable to millions of nodes and edges, making it suitable for the payment graph.
+- *nose:* Used for unit testing in Python.
+
+To install the two packages run `pip install networkx` and `pip install nose, or alternatively,
+install them directly from the requirements.txt file by entering `pip install -r requirements.txt`.
+
+
 # Table of Contents
 
 1. [Challenge Summary] (README.md#challenge-summary)
