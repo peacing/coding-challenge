@@ -13,7 +13,7 @@ class PaymentGraph(object):
     Methods
     -------
     calculate_median_degree : returns median degree of graph
-    update_graph : algorithm that determines when to add/remove hastags from the graph
+    update_graph : contains algorithm that determines when to add/remove hastags from the graph
 
     Attributes
     ----------
@@ -28,17 +28,16 @@ class PaymentGraph(object):
         self.G = nx.Graph()
 
     def _add_edges(self, target, actor, timestamp):
-        """Form edges of graph from combinations of hashtags.
-        Include timestamp from relevant payment as an edge attribute.
+        """Adds edges to graph connecting the two parties involved in a payment.
+        The timestamp is associated to the edge as an edge attribute.
 
         Parameters
         ----------
-        hashtags : {set} of hashtags contained in payment.
+        target : {str} name of the payment target
+        target : {str} name of the payment actor
         timestamp : {int} timestamp of payment.
         """
 
-        # Since graph is undirected, combinations of hashtags is sufficient.
-        # Ex: hashtags = ('A', 'B', 'C'), combinations = ('AB', 'AC', 'BC')
         self.G.add_edge(target, actor, timestamp=timestamp)
             # print("Edges: {} \n".format(self.G.edges(data=True)))
 
@@ -61,18 +60,15 @@ class PaymentGraph(object):
         Notes
         -----
         Update class instance variable {bool} new_max_time to True
-        if the max_timestamp is updated. Use to not check for old
+        if the max_timestamp is updated. Allows for skipping to check for old
         nodes/edges if the max_timestamp was not updated.
         """
 
         self.new_max_time = False
 
         if new_timestamp > self.max_timestamp:  # if setting new max
-
-            #print("Old timestamp: {}".format(self.max_timestamp))
             self.max_timestamp = new_timestamp
             self.new_max_time = True
-            #print("New timestamp: {}".format(self.max_timestamp))
 
         return self.max_timestamp
 
@@ -99,10 +95,9 @@ class PaymentGraph(object):
         """
 
         timestamps = nx.get_edge_attributes(self.G, 'timestamp')
-        for n, t in timestamps.items():
 
+        for n, t in timestamps.items():
             if (max_timestamp - t) > self.max_elapse:
-                #print("Removing edge between {}".format(n))
                 self.G.remove_edge(n[0], n[1])
 
         return None
@@ -121,12 +116,9 @@ class PaymentGraph(object):
             2) If timestamp is updated, look to remove old node/edges from graph.
             3) If payment is not too old, add its nodes/edges to graph.
         """
-
         #print("incoming payment: {} {} {}".format(payment.target, payment.actor, payment.timestamp))
-
         # determine if timestamp of payment is latest
         self.max_timestamp = self._update_max_timestamp(payment.timestamp)
-        #print("Max timestamp: {}".format(self.max_timestamp))
 
         if self.new_max_time:
             # remove edges that fall outside the 60 second window
@@ -137,7 +129,6 @@ class PaymentGraph(object):
 
         # determine if payment is older than 60 seconds of max timestamp
         too_old = self._check_too_old(payment.timestamp)
-        #print("Too old?: {}".format(too_old))
 
         if not too_old:
 
@@ -146,9 +137,6 @@ class PaymentGraph(object):
 
             # add edges to graph
             self._add_edges(payment.target, payment.actor, payment.timestamp)
-
-            #print("nodes: {}".format(self.G.nodes()))
-            #print("edges: {}".format(self.G.edges(data=True)))
 
         else:
             pass
