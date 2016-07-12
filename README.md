@@ -1,3 +1,37 @@
+# Running Instructions
+
+Python 3 is required to run this code.
+
+### Packages
+
+To run the program and it's tests, the following two packages are required:
+
+- **networkx:** a Python language software package for the creation and manipulation of networks. For this project, it's high-level syntax allowed for clear, conside code related to payment graph additions and subtractions. It is efficient and scaleable to millions of nodes and edges, making it suitable for the payment graph.
+- **nose:** Used for unit testing.
+
+To install the two packages run `pip install networkx` and `pip install nose`, or alternatively,
+install them directly from the requirements.txt file by entering `pip install -r requirements.txt`.
+
+### Running
+
+There are couple ways to run the code:
+
+1. In the home directory of the repository type: `python src/process_payments.py` (Note that by default the input file is assumed to be `./venmo_input/venmo-trans.txt` and the output file `./venmo_output/output.txt`, but these can be customized using the command line arguments `--input_file='./custom/filepath'` and `--output_file='./custom/filepath'`
+2. Alternatively, the script run.sh can be executed by typing while in the home dir: `./run.sh`
+
+### Testing
+
+To run all three nosetests type `nosetests -sv`. Passing will look like:
+
+    src.tests.test_module.TestBuildingVenmoGraph.test_building_venmo_graph ... ok
+    src.tests.test_module.TestVenmoPayment.test_dict_parser ... ok
+    src.tests.test_module.TestVenmoPayment.test_payment ... ok
+    ----------------------------------------------------------------------
+    Ran 3 tests in 0.098s
+
+There are additional tests in the `insight_testsuite`. To run, execute the `run_tests.sh` script in that directory.
+
+
 # Table of Contents
 
 1. [Challenge Summary] (README.md#challenge-summary)
